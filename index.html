@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <script async src="https://googlesyndication.com" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>時給計算LITE 〜深夜・残業代も1秒でわかる〜</title>
@@ -33,6 +32,9 @@
         .row { display: flex; gap: 8px; }
         button { width: 100%; background: #1a73e8; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
         button:hover { background: #1557b0; }
+
+        /* 広告設置用の専用エリア */
+        .ad-container { text-align: center; margin: 10px 0; min-height: 50px; display: flex; justify-content: center; align-items: center; }
 
         /* 審査用の免責事項・問い合わせエリア（最下部） */
         .footer-info { font-size: 10px; color: #aaa; text-align: center; padding: 15px; line-height: 1.5; background: #f1f3f5; border-top: 1px solid #dee2e6; }
@@ -98,16 +100,22 @@
                     <input type="time" id="break-end" value="22:00">
                 </div>
             </div>
-<!-- admax -->
-<script src="https://adm.shinobi.jp/s/4ff53800b68480ebabf6e14c4200d7c2"></script>
-<!-- admax -->
+
             <button onclick="calculateDailySalary()">今回の想定入金額を計算する</button>
         </div>
+
+        <!-- 🎁 【修正】入力欄の外側の正しい位置に配置された広告エリア -->
+        <div class="ad-container">
+            <!-- admax -->
+            <script src="https://adm.shinobi.jp/s/4ff53800b68480ebabf6e14c4200d7c2"></script>
+            <!-- admax -->
+        </div>
+
     </div>
 
-    <!-- 💡 Google審査対策：免責事項と問い合わせ窓口 -->
+    <!-- 免責事項と問い合わせ窓口 -->
     <div class="footer-info">
-        【免責事項】当サイトの計算結果は労基法をベースにした概算値であり、実際の給与額を保証するものではありません。当サイトはGoogle AdSense広告を掲載しています。<br>
+        【免責事項】当サイトの計算結果は労基法をベースにした概算値であり、実際の給与額を保証するものではありません。当サイトは広告を掲載しています。<br>
         開発者へのお問い合わせは、パソコンまたは各種Webブラウザの共有機能等よりご連絡ください。
     </div>
 
