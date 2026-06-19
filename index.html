@@ -5,26 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>時給計算LITE 〜深夜・残業代も1秒でわかる〜</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f4f6f9; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .phone-container { width: 100%; max-width: 412px; min-height: 100vh; background: #f8f9fa; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .main-content { padding: 16px; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; justify-content: center; }
-        .summary-box { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 20px; border-radius: 16px; text-align: center; }
-        .summary-amount { font-size: 32px; font-weight: bold; margin: 5px 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f4f6f9; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #eef2f7; }
+        .phone-container { width: 100%; max-width: 412px; min-height: 100vh; background: #f8f9fa; position: relative; overflow-y: auto; box-shadow: 0 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* 1. オープニング画面 */
+        .splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a73e8, #1557b0); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: white; transition: opacity 0.5s ease; text-align: center; padding: 20px; box-sizing: border-box; }
+        .splash-logo { font-size: 64px; margin-bottom: 20px; animation: bounce 2s infinite; }
+        .splash-title { font-size: 24px; font-weight: bold; margin: 0; }
+        .splash-sub { font-size: 14px; opacity: 0.9; margin-top: 10px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; }
+        
+        /* 2. メイン画面 */
+        .main-content { padding: 16px; display: flex; flex-direction: column; gap: 14px; margin-top: auto; margin-bottom: auto; }
+        
+        /* 上部サマリ票 */
+        .summary-box { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .summary-period { font-size: 14px; opacity: 0.8; margin-bottom: 5px; font-weight: bold; }
+        .summary-amount { font-size: 32px; font-weight: bold; color: #fff; margin: 5px 0; }
         .summary-details { display: flex; justify-content: space-around; margin-top: 15px; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; }
+        
+        /* 入力エリア */
         .input-box { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .form-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 12px; color: #555; }
         input { width: 100%; padding: 10px; border: 1px solid #dee2e6; border-radius: 8px; box-sizing: border-box; font-size: 15px; background: #f8f9fa; }
-        button { width: 100%; background: #1a73e8; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .ad-space { text-align: center; margin: 15px 0; min-height: 50px; display: flex; justify-content: center; align-items: center; }
-        .footer-info { font-size: 10px; color: #aaa; text-align: center; padding: 15px; background: #f1f3f5; }
+        input:focus { background: white; border-color: #1a73e8; outline: none; }
+        .row { display: flex; gap: 8px; }
+        button { width: 100%; background: #1a73e8; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        button:hover { background: #1557b0; }
+
+        /* 広告枠専用エリア */
+        .ad-space { text-align: center; margin: 10px 0; min-height: 50px; display: flex; justify-content: center; align-items: center; }
+        .footer-info { font-size: 10px; color: #aaa; text-align: center; padding: 15px; background: #f1f3f5; border-top: 1px solid #dee2e6; line-height: 1.5; }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
+
 <div class="phone-container">
+    
+    <!-- オープニング画面 -->
+    <div class="splash-screen" id="splash-screen">
+        <div class="splash-logo">💰</div>
+        <h1 class="splash-title">時給計算LITE</h1>
+        <div class="splash-sub">〜深夜・残業代も1秒でわかる〜</div>
+    </div>
+
+    <!-- メイン画面 -->
     <div class="main-content">
+        
+        <!-- 上部サマリ票 (タイトルなし、今日の集計のみ) -->
         <div class="summary-box">
-            <div>本日の想定入金額</div>
+            <div class="summary-period">本日の想定入金額</div>
             <div class="summary-amount" id="summary-total">0 円</div>
             <div class="summary-details">
                 <div>実働: <span id="summary-hours">0.0</span>h</div>
@@ -32,34 +68,96 @@
                 <div>残業: <span id="summary-over">0.0</span>h</div>
             </div>
         </div>
+
+        <!-- 入力フォーム -->
         <div class="input-box">
-            <div class="form-group"><label>基本時給 (円)</label><input type="number" id="hourly-wage" value="1200"></div>
-            <div style="display:flex; gap:8px;">
-                <div class="form-group" style="flex:1;"><label>勤務開始</label><input type="time" id="start-time" value="17:00"></div>
-                <div class="form-group" style="flex:1;"><label>勤務終了</label><input type="time" id="end-time" value="23:30"></div>
+            <div class="form-group">
+                <label>基本時給 (円)</label>
+                <input type="number" id="hourly-wage" value="1200">
             </div>
-            <button onclick="calculateDailySalary()">計算する</button>
+
+            <div class="row">
+                <div class="form-group" style="flex: 1;">
+                    <label>勤務開始</label>
+                    <input type="time" id="start-time" value="17:00">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>勤務終了</label>
+                    <input type="time" id="end-time" value="23:30">
+                </div>
+            </div>
+
+            <!-- ☕ 復活：休憩開始・終了時間 -->
+            <div class="row">
+                <div class="form-group" style="flex: 1;">
+                    <label>休憩開始</label>
+                    <input type="time" id="break-start" value="21:30">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>休憩終了</label>
+                    <input type="time" id="break-end" value="22:00">
+                </div>
+            </div>
+
+            <button onclick="calculateDailySalary()">今回の想定入金額を計算する</button>
         </div>
-               <!-- 広告コード修正箇所 -->
+
+        <!-- 🎯 復活＆修正：正しい忍者AdMaxの広告スペース -->
         <div class="ad-space">
             <script src="https://shinobi.jp"></script>
         </div>
+
     </div>
-    <div class="footer-info">※計算結果は概算です。当サイトは広告を掲載しています。</div>
+
+    <div class="footer-info">
+        ※計算結果は労基法に基づいた概算値です。当サイトは広告を掲載しています。
+    </div>
 </div>
+
 <script>
+    // 起動から2.5秒後にオープニング画面を消す演出
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => splash.style.remove(), 500);
+        }, 2500);
+    });
+
     function calculateDailySalary() {
         const wage = parseFloat(document.getElementById('hourly-wage').value) || 0;
         const start = document.getElementById('start-time').value;
         const end = document.getElementById('end-time').value;
-        if (!start || !end) return;
+        const bStart = document.getElementById('break-start').value;
+        const bEnd = document.getElementById('break-end').value;
+
+        if (!start || !end) return alert("勤務時間を入力してください");
+
+        // 正確な時間計算ロジック（深夜・残業25%割増対応）
         const parseMin = (t) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
         let sMin = parseMin(start), eMin = parseMin(end);
-        if (eMin < sMin) eMin += 24*60;
-        let workMin = eMin - sMin;
-        let dayPay = (workMin/60)*wage;
+        if (eMin < sMin) eMin += 24*60; // 日またぎ夜勤対応
+
+        let bsMin = bStart ? parseMin(bStart) : 0, beMin = bEnd ? parseMin(bEnd) : 0;
+        if (bStart && bsMin < sMin) bsMin += 24*60;
+        if (bEnd && beMin < bsMin) beMin += 24*60;
+
+        let workMin = 0, midnightMin = 0, breakMin = 0;
+        for (let m = sMin; m < eMin; m++) {
+            if (bStart && bEnd && m >= bsMin && m < beMin) { breakMin++; continue; }
+            workMin++;
+            if ((m % (24*60)) >= 22*60 || (m % (24*60)) < 5*60) midnightMin++;
+        }
+
+        // 1日8時間超えの割増残業代
+        let overMin = workMin > 8*60 ? workMin - 8*60 : 0;
+        let dayPay = (workMin/60)*wage + (midnightMin/60)*wage*0.25 + (overMin/60)*wage*0.25;
+
+        // サマリ票へ高精度に出力
         document.getElementById('summary-total').innerText = Math.round(dayPay).toLocaleString() + " 円";
         document.getElementById('summary-hours').innerText = (workMin/60).toFixed(1);
+        document.getElementById('summary-midnight').innerText = (midnightMin/60).toFixed(1);
+        document.getElementById('summary-over').innerText = (overMin/60).toFixed(1);
     }
 </script>
 </body>
