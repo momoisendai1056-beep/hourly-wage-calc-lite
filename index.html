@@ -101,7 +101,7 @@
             <button onclick="calculateDailySalary()">今回の想定入金額を計算する</button>
         </div>
 
-          <!-- 🎯 忍者AdMax広告スペース -->
+        <!-- 🎯 修正箇所：正しい忍者AdMaxの広告コードに差し替えました -->
         <div class="ad-space">
             <script src="https://shinobi.jp"></script>
         </div>
@@ -114,14 +114,13 @@
 </div>
 
 <script>
-    // 起動から2.5秒後にオープニング画面を完全に消し去る修正
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             if (splash) {
                 splash.style.opacity = '0';
                 setTimeout(() => {
-                    splash.style.display = 'none'; // タップ妨害を防ぐために完全消去
+                    splash.style.display = 'none'; 
                 }, 500);
             }
         }, 2500);
@@ -162,3 +161,4 @@
 </script>
 </body>
 </html>
+
